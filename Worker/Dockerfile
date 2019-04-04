@@ -1,0 +1,17 @@
+FROM python:3.7.3-alpine
+
+ENV SQSURL {SQS_URL}
+ENV BOTO3_AWS_KEY_ID {AWS_KEY_ID}
+ENV BOTO3_AWS_SECRET_KEY {AWS_SECRET_KEY}
+ENV BOTO3_AWS_REGION_NAME {AWS_REGION}
+ENV LOGGER_LEVEL 10
+ENV MONGODB {MONGODB}
+
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . .
+
+RUN pip install -r requirements.txt
+
+ENTRYPOINT ["python3", "start.py"]

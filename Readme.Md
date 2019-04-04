@@ -17,22 +17,22 @@ Todas as configurações necessárias de cada serviço está descrito a baixo. S
 
 ### Documentação TerraForm  
 
-O TerraForm existente neste projeto está configurado para criar o serviço completo do SQS necessário para que seja feita a execução completa desta aplicação e junto salvar o TSFile em um Bucket S3. É necessário configurar as credenciais de acesso de cada arquivo, para isso será necessário modificar os arquivos **main.tf** e **terraform.tf**.
+O TerraForm existente neste projeto está configurado para criar o serviço completo do SQS necessário para que seja feita a execução completa desta aplicação e junto salvar o TSFile em um Bucket S3. É necessário configurar as credenciais de acesso de cada arquivo, para isso será necessário modificar os arquivos **main.tf** e **terraform.tf**, nas seguintes linhas descritar abaixo:
 
 ```
-    # terraform.tf
+    # terraform.tf -> Responsável por salvar o TSFile no S3
 
-    bucket = "BUCKETNAME"
-    key = "PATH/TS/FILE"
-    access_key = "ACCESS_KEY"
-    secret_key = "SECRET_KEY"
-    region = "REGION_AWS"
+    bucket = "BUCKETNAME" -> Nome do Bucket S3
+    key = "PATH/TS/FILE" -> Destino do arquivo TSFile
+    access_key = "ACCESS_KEY" -> Chave de acesso da AWS
+    secret_key = "SECRET_KEY" -> Secret de acesso da AWS
+    region = "REGION_AWS" -> Região do Bucket da AWS
 
     # main.tf
 
-    access_key = "ACCESS_KEY"
-    secret_key = "SECRET_KEY"
-    region = "REGION_AWS"
+    access_key = "ACCESS_KEY" -> Chave de acesso da AWS
+    secret_key = "SECRET_KEY" -> Secret de acesso da AWS
+    region = "REGION_AWS" -> Região do Bucket da AWS
     
 ```
 
@@ -48,11 +48,13 @@ Para executar o TerraForm é necessário digitar os seguintes comandos:
 $ cd Terraform
 $ sudo docker-compose build terraform
 $ sudo docker-compose run terraform
+[DOCKER] $ terraform init
+[DOCKER] $ terraform apply
 ```
 
 ### IAM Policy SQS
 
-É necessário criar uma política junto ao IAM para que seja liberado o acesso ao TerraForm para criar á infraestrutura do SQS. A permissão de política minima necessária para se criar o SQS com terraforma está descrita abaixo:
+É necessário criar uma política no IAM para que seja liberado o acesso ao TerraForm para criar á infraestrutura do SQS. A permissão de política minima necessária para se criar o SQS com terraforma está descrita abaixo:
 
 ```
 {
@@ -77,7 +79,7 @@ $ sudo docker-compose run terraform
 
 Caso não tenha conhecimento em JSON, você pode configurar essa política utilizando o painel de console do IAM. É necessária configurar uma política que tenha acesso ao serviço do SQS, apenas, e que tenha permissão de **TagQueue**, **GetQueueUrl**, **GetQueueAttributes**, **ListQueueTags**, **CreateQueue** e **SetQueueAttributes**, desta forma o terraforms irá comunicar com sucesso a AWS.
 
-É necessário criar uma política junto ao IAM para que seja liberado o acesso ao TerraForm para salvar o arquivo TFState. A permissão de política minima necessária para se salvar o arquivo com terraforma está descrita abaixo: 
+É necessário criar uma política no IAM para que seja liberado o acesso ao TerraForm para salvar o arquivo TFState, sendo necessário modificar a política para o bucket correto. A permissão de política minima necessária para se salvar o arquivo com terraforma está descrita abaixo: 
 
 ```
 {
@@ -86,12 +88,12 @@ Caso não tenha conhecimento em JSON, você pode configurar essa política utili
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::mybucket"
+      "Resource": "arn:aws:s3:::mybucket" -> BUCKET_DE_DESTINO
     },
     {
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:PutObject"],
-      "Resource": "arn:aws:s3:::mybucket/path/to/my/key"
+      "Resource": "arn:aws:s3:::mybucket/path/to/my/key" -> BUCKET_DE_DESTINO_TSFILE/DESTINO_TS_FILE
     }
   ]
 }
@@ -191,7 +193,7 @@ Para se executar está aplicação, apenas, é necessário fazer todas as config
 
 ```
 $ cd APIRest
-$ sudo docker build -t IMAGE_NAME:TAG
+$ sudo docker build -t IMAGE_NAME:TAG .
 $ sudo docker run -dti -p 3000:3000 IMAGE_NAME
 ```
 
@@ -221,16 +223,16 @@ MONGODB -> Denife qual banco será acessado para armazenar as mensagens da fila.
 Esta aplicação foi estruturada pensando de maneira simples e fácil de dar manutenção, portanto sendo da seguinte maneira:
 
 ```
-start.py
+start.py -> Ponto de partida da aplicação
 src/
-    - index.py
+    - index.py -> Orquestrador da aplicação
     - configs/
-        - loadBD.py
+        - loadBD.py -> Criação do banco de dados
     - controller/
         - consumer/
-            - consumer.py
+            - consumer.py -> Consumidor do SQS
     - dao/
-        - sugestion.py
+        - sugestion.py -> Schema Sugestion
 ```
 
 #### Depêndencia de módulos

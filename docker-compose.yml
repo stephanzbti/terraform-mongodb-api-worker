@@ -1,0 +1,59 @@
+version: "2.2"
+services:
+  terraform:
+    build: Terraform/
+  mongodb:
+    restart: always
+    container_name: mongodb
+    image: mongo
+    cpu_count: 1
+    cpu_percent: 50
+    command: mongod --dbpath /data/db --port 27017
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - ./MongoDB/data/mongodb:/data/db
+    environment:
+      TERM: xterm
+    networks:
+      - local_network
+  apirest:
+    restart: always
+    container_name: apirest
+    build: ./APIRest/
+    cpu_count: 1
+    cpu_percent: 50
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    environment:
+      SQSURL: {SQS_URL}
+      BOTO3_AWS_KEY_ID: {AWS_KEY_ID}
+      BOTO3_AWS_SECRET_KEY: {AWS_SECRET_KEY}
+      BOTO3_AWS_REGION_NAME: {AWS_REGION}
+      LOGGER_LEVEL: 10
+      PORT: 3000
+    networks:
+      - local_network
+  worker:
+    restart: always
+    container_name: worker
+    build: ./Worker/
+    cpu_count: 1
+    cpu_percent: 50
+    environment:
+      SQSURL: {SQS_URL}
+      BOTO3_AWS_KEY_ID: {AWS_KEY_ID}
+      BOTO3_AWS_SECRET_KEY: {AWS_SECRET_KEY}
+      BOTO3_AWS_REGION_NAME: {AWS_REGION}
+      LOGGER_LEVEL: 10
+      MONGODB: {MONGODB}
+    networks:
+      - local_network
+
+networks:
+  local_network:
+    driver: bridge

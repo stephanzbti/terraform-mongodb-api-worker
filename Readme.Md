@@ -48,8 +48,7 @@ Para executar o TerraForm é necessário digitar os seguintes comandos:
 $ cd Terraform
 $ sudo docker-compose build terraform
 $ sudo docker-compose run terraform
-[DOCKER] $ terraform init
-[DOCKER] $ terraform apply
+[DOCKER] # terraform apply
 ```
 
 ### IAM Policy SQS
@@ -113,7 +112,7 @@ Este MongoDB está configurado para ser executado sem senha, sendo necessário f
 ```
 $ cd MongoDB
 $ sudo docker build -t mongodb:latest .
-$ sudo docker run -ti -p 27017:27017 mongodb:latest
+$ sudo docker run -dti -p 27017:27017 mongodb:latest
 ```
 
 ## APIRest
@@ -161,7 +160,7 @@ src/
 
 ```
 
-#### Depêndencia de módulos
+### Depêndencia de módulos
 
 Para se utilizar está API Rest será necessário a intalação dos sequintes módulos, descritas também no requirements.txt:
 
@@ -235,7 +234,7 @@ src/
         - sugestion.py -> Schema Sugestion
 ```
 
-#### Depêndencia de módulos
+### Depêndencia de módulos
 
 Para se utilizar está API Rest será necessário a intalação dos sequintes módulos, descritas também no requirements.txt:
 

@@ -12,3 +12,5 @@ RUN unzip terraform_0.11.13_linux_amd64.zip
 RUN mv terraform /usr/local/bin/
 
 RUN ["terraform", "init"]
+
+ENTRYPOINT ["/bin/bash"]

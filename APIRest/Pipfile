@@ -24,7 +24,7 @@ Flask-RESTful = "==0.3.7"
 Flask = "==1.0.2"
 Jinja2 = "==2.10"
 MarkupSafe = "==1.1.1"
-Werkzeug = "==0.15.2"
+Werkzeug = "==0.15.3"
 
 [requires]
 python_version = "3.6"
